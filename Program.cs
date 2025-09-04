@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Hangfire;
-using Hangfire.SqlServer;
+using Hangfire.Storage.SQLite;
 using UpgradeNotificationSystem.Data;
 using UpgradeNotificationSystem.Services;
 using UpgradeNotificationSystem.Hubs;
@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 
 // Configure Entity Framework
 builder.Services.AddDbContext<UpgradeNotificationContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configure SignalR
 builder.Services.AddSignalR();
@@ -22,7 +22,7 @@ builder.Services.AddHangfire(configuration => configuration
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+    .UseSQLiteStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddHangfireServer();
 

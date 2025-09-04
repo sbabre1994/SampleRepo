@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../buildMultiTargeting/UpgradeNotificationSystem.props" />
-</Project>

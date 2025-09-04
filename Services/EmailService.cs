@@ -25,6 +25,14 @@ namespace UpgradeNotificationSystem.Services
         {
             try
             {
+                // Skip email in development if SMTP not configured
+                var host = _configuration["Email:SmtpHost"];
+                if (string.IsNullOrEmpty(host) || host == "smtp.gmail.com")
+                {
+                    _logger.LogInformation("Skipping email notification (development mode) for {Email}", toEmail);
+                    return;
+                }
+
                 var message = new MimeMessage();
                 message.From.Add(new MailboxAddress("Upgrade Notification System", _configuration["Email:FromEmail"]));
                 message.To.Add(new MailboxAddress("", toEmail));
@@ -43,7 +51,11 @@ namespace UpgradeNotificationSystem.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to send upgrade notification email to {Email}", toEmail);
-                throw;
+                // Don't throw in development - just log the error
+                if (!string.IsNullOrEmpty(_configuration["Email:Username"]))
+                {
+                    throw;
+                }
             }
         }
 
@@ -51,6 +63,14 @@ namespace UpgradeNotificationSystem.Services
         {
             try
             {
+                // Skip email in development if SMTP not configured
+                var host = _configuration["Email:SmtpHost"];
+                if (string.IsNullOrEmpty(host) || host == "smtp.gmail.com")
+                {
+                    _logger.LogInformation("Skipping email notification (development mode) for {Email}", toEmail);
+                    return;
+                }
+
                 var message = new MimeMessage();
                 message.From.Add(new MailboxAddress("Upgrade Notification System", _configuration["Email:FromEmail"]));
                 message.To.Add(new MailboxAddress("", toEmail));
@@ -69,7 +89,11 @@ namespace UpgradeNotificationSystem.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to send upgrade confirmation email to {Email}", toEmail);
-                throw;
+                // Don't throw in development - just log the error
+                if (!string.IsNullOrEmpty(_configuration["Email:Username"]))
+                {
+                    throw;
+                }
             }
         }
 

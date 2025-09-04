@@ -88,7 +88,7 @@ namespace UpgradeNotificationSystem.Controllers
         /// Set or update a user's upgrade preference
         /// </summary>
         [HttpPost("preference")]
-        public async Task<ActionResult<UserUpgradePreference>> SetUserPreference([FromBody] SetPreferenceRequest request)
+        public async Task<ActionResult<object>> SetUserPreference([FromBody] SetPreferenceRequest request)
         {
             try
             {
@@ -98,7 +98,20 @@ namespace UpgradeNotificationSystem.Controllers
                 }
 
                 var preference = await _notificationService.SetUserPreferenceAsync(request);
-                return Ok(preference);
+                
+                // Return a simple response to avoid circular references
+                var result = new
+                {
+                    success = true,
+                    preferenceId = preference.Id,
+                    userId = preference.UserId,
+                    plannedUpgradeId = preference.PlannedUpgradeId,
+                    preferredDateTime = preference.PreferredDateTime,
+                    jobScheduled = preference.JobScheduled,
+                    message = "User preference saved successfully"
+                };
+                
+                return Ok(result);
             }
             catch (ArgumentException ex)
             {
