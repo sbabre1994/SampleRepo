@@ -1,0 +1,6 @@
+@UpgradeNotificationSystem_HostAddress = http://localhost:5107
+
+GET {{UpgradeNotificationSystem_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
