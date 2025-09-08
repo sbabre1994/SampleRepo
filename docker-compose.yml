@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: upgrade_notification_db
+    environment:
+      POSTGRES_DB: upgrade_notification
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - upgrade_network
+
+  backend:
+    build: .
+    container_name: upgrade_notification_backend
+    depends_on:
+      - postgres
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=upgrade_notification;Username=postgres;Password=postgres;
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    networks:
+      - upgrade_network
+
+volumes:
+  postgres_data:
+
+networks:
+  upgrade_network:
+    driver: bridge
